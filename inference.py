@@ -15,6 +15,7 @@ class Inferencer:
     def __init__(self, args):
         self.start_time = time.time()
         self.args = args
+        # self.output_path = output_path
 
         use_cuda = self.args.cuda and torch.cuda.is_available()
         self.device = torch.device('cuda' if use_cuda else 'cpu')
@@ -25,7 +26,7 @@ class Inferencer:
                                                    mode='validation')
 
         self.model = Trainer_seg.init_model(self.args.model_name, self.device, self.args)
-        self.model.load_state_dict(torch.load(args.model_path))
+        self.model.load_state_dict(torch.load(args.model_path, map_location=self.device))
         self.model.eval()
 
         self.metric = self._init_metric(self.args.task, self.args.n_classes)
